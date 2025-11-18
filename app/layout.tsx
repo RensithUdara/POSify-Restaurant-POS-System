@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import './globals.css'
 import { POSProvider } from "@/context/POSContext"
 import { ThemeProvider } from "@/components/theme-provider"
+import { ErrorBoundary } from "@/components/error-boundary"
 import { Toaster } from "@/components/ui/sonner"
 
 export const metadata: Metadata = {
