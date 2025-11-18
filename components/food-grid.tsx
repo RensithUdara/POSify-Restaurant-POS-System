@@ -23,7 +23,7 @@ export function FoodGrid() {
     // Filter by search query
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase()
-      items = items.filter(item => 
+      items = items.filter(item =>
         item.name.toLowerCase().includes(query) ||
         item.description?.toLowerCase().includes(query) ||
         item.category.toLowerCase().includes(query) ||
@@ -52,8 +52,8 @@ export function FoodGrid() {
         <div className="text-center py-12">
           <div className="text-gray-500 text-lg mb-2">No items found</div>
           <p className="text-gray-400">
-            {searchQuery.trim() 
-              ? "Try adjusting your search terms" 
+            {searchQuery.trim()
+              ? "Try adjusting your search terms"
               : "No items available in this category"
             }
           </p>
