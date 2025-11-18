@@ -1,10 +1,13 @@
 "use client"
 
+import { useMemo } from "react"
 import { SidebarNav } from "../../components/sidebar-nav"
 import { Header } from "../../components/header"
 import { Footer } from "../../components/footer"
 import { usePOS } from "@/context/POSContext"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
 import {
     DollarSign,
     TrendingUp,
@@ -13,7 +16,10 @@ import {
     Clock,
     Star,
     Target,
-    Calendar
+    Calendar,
+    RefreshCw,
+    Download,
+    Filter
 } from "lucide-react"
 import {
     ResponsiveContainer,
@@ -27,40 +33,18 @@ import {
     Line,
     PieChart,
     Pie,
-    Cell
+    Cell,
+    AreaChart,
+    Area
 } from "recharts"
-
-// Sample data for charts
-const salesData = [
-    { hour: '9AM', sales: 120, orders: 8 },
-    { hour: '10AM', sales: 250, orders: 15 },
-    { hour: '11AM', sales: 380, orders: 22 },
-    { hour: '12PM', sales: 650, orders: 45 },
-    { hour: '1PM', sales: 820, orders: 58 },
-    { hour: '2PM', sales: 540, orders: 35 },
-    { hour: '3PM', sales: 320, orders: 20 },
-    { hour: '4PM', sales: 280, orders: 18 },
-    { hour: '5PM', sales: 450, orders: 28 },
-    { hour: '6PM', sales: 750, orders: 52 },
-    { hour: '7PM', sales: 890, orders: 68 },
-    { hour: '8PM', sales: 720, orders: 48 },
-]
-
-const categoryData = [
-    { name: 'Burgers', value: 35, color: '#10B981' },
-    { name: 'Pizzas', value: 25, color: '#3B82F6' },
-    { name: 'Beverages', value: 20, color: '#F59E0B' },
-    { name: 'Salads', value: 12, color: '#EF4444' },
-    { name: 'Desserts', value: 8, color: '#8B5CF6' },
-]
-
-const topItems = [
-    { name: 'Classic Burger', orders: 45, revenue: 1035.55 },
-    { name: 'Margherita Pizza', orders: 38, revenue: 721.62 },
-    { name: 'Caesar Salad', orders: 32, revenue: 575.68 },
-    { name: 'Fresh Orange Juice', orders: 28, revenue: 363.72 },
-    { name: 'Chocolate Cake', orders: 24, revenue: 215.76 },
-]
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
+import { useState } from "react"
 
 export default function AnalyticsPage() {
     const { state } = usePOS()
