@@ -177,9 +177,32 @@ export default function AnalyticsPage() {
                 <div className="flex-1 overflow-auto p-6">
                     <div className="max-w-7xl mx-auto">
                         {/* Page Header */}
-                        <div className="mb-6">
-                            <h1 className="text-2xl font-bold text-gray-900 mb-2">Analytics & Reports</h1>
-                            <p className="text-gray-600">Track performance and insights for your restaurant</p>
+                        <div className="mb-6 flex justify-between items-start">
+                            <div>
+                                <h1 className="text-2xl font-bold text-gray-900 mb-2">Analytics & Reports</h1>
+                                <p className="text-gray-600">Track performance and insights for your restaurant</p>
+                            </div>
+                            <div className="flex gap-2">
+                                <Select value={dateRange} onValueChange={setDateRange}>
+                                    <SelectTrigger className="w-40">
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="today">Today</SelectItem>
+                                        <SelectItem value="week">This Week</SelectItem>
+                                        <SelectItem value="month">This Month</SelectItem>
+                                        <SelectItem value="all">All Time</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                <Button variant="outline" size="sm">
+                                    <RefreshCw className="h-4 w-4 mr-2" />
+                                    Refresh
+                                </Button>
+                                <Button variant="outline" size="sm">
+                                    <Download className="h-4 w-4 mr-2" />
+                                    Export
+                                </Button>
+                            </div>
                         </div>
 
                         {/* Key Metrics */}
