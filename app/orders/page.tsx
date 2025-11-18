@@ -115,7 +115,7 @@ export default function OrdersPage() {
             type: 'UPDATE_ORDER',
             payload: {
                 orderId,
-                updates: { 
+                updates: {
                     paymentStatus: 'refunded',
                     status: 'cancelled'
                 }
