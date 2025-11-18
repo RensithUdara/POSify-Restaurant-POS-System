@@ -9,7 +9,7 @@ import { usePOS } from "@/context/POSContext"
 import { CartItem } from "./cart-item"
 import { DiningMode } from "./dining-mode"
 import { OrderFooter } from "./order-footer"
-import { 
+import {
   Dialog,
   DialogContent,
   DialogHeader,
@@ -44,7 +44,7 @@ export function Cart({ onClose }: CartProps) {
           phone: customerPhone.trim() || undefined
         }
       })
-      
+
       dispatch({
         type: 'SET_CURRENT_TABLE',
         payload: {
@@ -54,7 +54,7 @@ export function Cart({ onClose }: CartProps) {
           status: 'occupied'
         }
       })
-      
+
       setShowCustomerDialog(false)
       toast.success("Customer information saved")
     }
@@ -67,10 +67,10 @@ export function Cart({ onClose }: CartProps) {
     }
 
     setSelectedPaymentMethod(paymentType)
-    
+
     // Create order with payment method
     createOrder({ type: paymentType })
-    
+
     toast.success(`Order placed successfully! Payment: ${paymentType}`)
     setSelectedPaymentMethod(null)
   }
@@ -134,7 +134,7 @@ export function Cart({ onClose }: CartProps) {
                 </div>
               </DialogContent>
             </Dialog>
-            
+
             {onClose && (
               <Button variant="outline" size="icon" onClick={onClose}>
                 <X className="h-4 w-4" />
@@ -142,7 +142,7 @@ export function Cart({ onClose }: CartProps) {
             )}
           </div>
         </div>
-        
+
         <DiningMode />
       </div>
 
@@ -172,8 +172,8 @@ export function Cart({ onClose }: CartProps) {
     </div>
   )
 }
-        <Button className="w-full bg-green-600 hover:bg-green-700 text-white h-12">Place Order</Button>
-      </div>
-    </div>
+<Button className="w-full bg-green-600 hover:bg-green-700 text-white h-12">Place Order</Button>
+      </div >
+    </div >
   )
 }
