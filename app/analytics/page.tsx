@@ -48,15 +48,125 @@ import { useState } from "react"
 
 export default function AnalyticsPage() {
     const { state } = usePOS()
+    const [dateRange, setDateRange] = useState("today")
 
-    const totalRevenue = state.orders.reduce((sum, order) =>
-        order.paymentStatus === 'paid' ? sum + order.total : sum, 0
-    )
+    // Calculate analytics data from real orders
+    const analyticsData = useMemo(() => {
+        const today = new Date()
+        const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate())
+        const startOfWeek = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000)
+        const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1)
 
-    const totalOrders = state.orders.length
-    const avgOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0
-    const completedOrders = state.orders.filter(order => order.status === 'served').length
-    const completionRate = totalOrders > 0 ? (completedOrders / totalOrders) * 100 : 0
+        let filteredOrders = state.orders
+        switch (dateRange) {
+            case "today":
+                filteredOrders = state.orders.filter(order => 
+                    new Date(order.createdAt) >= startOfDay
+                )
+                break
+            case "week":
+                filteredOrders = state.orders.filter(order => 
+                    new Date(order.createdAt) >= startOfWeek
+                )
+                break
+            case "month":
+                filteredOrders = state.orders.filter(order => 
+                    new Date(order.createdAt) >= startOfMonth
+                )
+                break
+        }
+
+        const totalRevenue = filteredOrders.reduce((sum, order) =>
+            order.paymentStatus === 'paid' ? sum + order.total : sum, 0
+        )
+
+        const totalOrders = filteredOrders.length
+        const avgOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0
+        const completedOrders = filteredOrders.filter(order => order.status === 'served').length
+        const completionRate = totalOrders > 0 ? (completedOrders / totalOrders) * 100 : 0
+
+        // Generate hourly sales data
+        const hourlyData = Array.from({ length: 24 }, (_, hour) => {
+            const hourOrders = filteredOrders.filter(order => {
+                const orderHour = new Date(order.createdAt).getHours()
+                return orderHour === hour
+            })
+            const hourSales = hourOrders.reduce((sum, order) => 
+                order.paymentStatus === 'paid' ? sum + order.total : sum, 0
+            )
+            return {
+                hour: hour === 0 ? '12AM' : hour <= 12 ? `${hour}AM` : `${hour - 12}PM`,
+                sales: hourSales,
+                orders: hourOrders.length
+            }
+        }).filter(data => data.sales > 0 || data.orders > 0)
+
+        // Calculate category data
+        const categoryMap = new Map<string, { count: number, revenue: number }>()
+        filteredOrders.forEach(order => {
+            order.items.forEach(item => {
+                const category = item.menuItem.category
+                const current = categoryMap.get(category) || { count: 0, revenue: 0 }
+                const itemPrice = item.menuItem.discount 
+                    ? item.menuItem.price * (1 - item.menuItem.discount / 100)
+                    : item.menuItem.price
+                categoryMap.set(category, {
+                    count: current.count + item.quantity,
+                    revenue: current.revenue + (itemPrice * item.quantity)
+                })
+            })
+        })
+
+        const categoryData = Array.from(categoryMap.entries()).map(([name, data]) => ({
+            name: name.charAt(0).toUpperCase() + name.slice(1),
+            value: data.count,
+            revenue: data.revenue,
+            color: `hsl(${Math.random() * 360}, 70%, 50%)`
+        }))
+
+        // Calculate top items
+        const itemMap = new Map<string, { count: number, revenue: number, item: any }>()
+        filteredOrders.forEach(order => {
+            order.items.forEach(item => {
+                const itemId = item.menuItem.id
+                const current = itemMap.get(itemId) || { count: 0, revenue: 0, item: item.menuItem }
+                const itemPrice = item.menuItem.discount 
+                    ? item.menuItem.price * (1 - item.menuItem.discount / 100)
+                    : item.menuItem.price
+                itemMap.set(itemId, {
+                    count: current.count + item.quantity,
+                    revenue: current.revenue + (itemPrice * item.quantity),
+                    item: item.menuItem
+                })
+            })
+        })
+
+        const topItems = Array.from(itemMap.entries())
+            .map(([_, data]) => ({
+                name: data.item.name,
+                orders: data.count,
+                revenue: data.revenue
+            }))
+            .sort((a, b) => b.revenue - a.revenue)
+            .slice(0, 5)
+
+        return {
+            totalRevenue,
+            totalOrders,
+            avgOrderValue,
+            completionRate,
+            salesData: hourlyData,
+            categoryData,
+            topItems
+        }
+    }, [state.orders, dateRange])
+
+    const formatCurrency = (amount: number) => {
+        return new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: state.settings.currency
+        }).format(amount)
+    }
 
     return (
         <div className="flex h-screen bg-gray-50">
