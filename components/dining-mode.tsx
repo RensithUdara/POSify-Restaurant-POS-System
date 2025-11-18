@@ -20,14 +20,13 @@ export function DiningMode() {
   return (
     <div className="flex gap-2">
       {modes.map((mode) => (
-        <Button 
+        <Button
           key={mode.id}
           variant={state.orderType === mode.id ? "default" : "outline"}
-          className={`flex-1 rounded-full text-xs ${
-            state.orderType === mode.id 
-              ? "bg-green-600 hover:bg-green-700" 
+          className={`flex-1 rounded-full text-xs ${state.orderType === mode.id
+              ? "bg-green-600 hover:bg-green-700"
               : "hover:bg-green-50 hover:text-green-600"
-          }`}
+            }`}
           onClick={() => handleModeChange(mode.id)}
         >
           <mode.icon className="h-3 w-3 mr-1" />
