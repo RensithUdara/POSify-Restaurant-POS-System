@@ -131,7 +131,7 @@ function posReducer(state: POSState, action: POSAction): POSState {
                 }
                 updatedCart = [...state.cart, newCartItem]
             }
-            
+
             saveToStorage(STORAGE_KEYS.CART, updatedCart)
             return { ...state, cart: updatedCart }
         }
