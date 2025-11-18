@@ -22,10 +22,10 @@ export function CategoryFilter() {
 
   const categoriesWithCounts = useMemo(() => {
     return state.categories.map(category => {
-      const count = category.id === 'all' 
+      const count = category.id === 'all'
         ? state.menuItems.length
         : state.menuItems.filter(item => item.category === category.id).length
-      
+
       return {
         ...category,
         count,
@@ -44,17 +44,15 @@ export function CategoryFilter() {
         <div
           key={category.id}
           onClick={() => handleCategorySelect(category.id)}
-          className={`flex flex-col items-center p-3 rounded-xl min-w-[80px] sm:min-w-[100px] transition-all duration-200 ${
-            state.selectedCategory === category.id 
-              ? "bg-green-600 text-white shadow-lg scale-105" 
+          className={`flex flex-col items-center p-3 rounded-xl min-w-[80px] sm:min-w-[100px] transition-all duration-200 ${state.selectedCategory === category.id
+              ? "bg-green-600 text-white shadow-lg scale-105"
               : "bg-white text-gray-700 hover:bg-green-50 hover:text-green-600"
-          } border cursor-pointer flex-shrink-0`}
+            } border cursor-pointer flex-shrink-0`}
         >
           <category.icon className="h-5 w-5 sm:h-6 sm:w-6 mb-1" />
           <span className="text-xs sm:text-sm font-medium">{category.name}</span>
-          <span className={`text-xs ${
-            state.selectedCategory === category.id ? 'text-green-100' : 'text-gray-500'
-          } ${isMobile ? 'hidden' : 'block'}`}>
+          <span className={`text-xs ${state.selectedCategory === category.id ? 'text-green-100' : 'text-gray-500'
+            } ${isMobile ? 'hidden' : 'block'}`}>
             {category.count} Items
           </span>
         </div>
