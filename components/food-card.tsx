@@ -44,7 +44,7 @@ export function FoodCard({ menuItem }: FoodCardProps) {
     setQuantity(newQuantity)
   }
 
-  const finalPrice = menuItem.discount 
+  const finalPrice = menuItem.discount
     ? menuItem.price * (1 - menuItem.discount / 100)
     : menuItem.price
 
@@ -52,10 +52,10 @@ export function FoodCard({ menuItem }: FoodCardProps) {
     <>
       <Card className={`overflow-hidden transition-all duration-200 hover:shadow-lg ${!menuItem.available ? 'opacity-60' : ''}`}>
         <div className="relative">
-          <img 
-            src={menuItem.image || "/placeholder.svg"} 
-            alt={menuItem.name} 
-            className="w-full h-40 object-cover" 
+          <img
+            src={menuItem.image || "/placeholder.svg"}
+            alt={menuItem.name}
+            className="w-full h-40 object-cover"
           />
           {menuItem.discount && (
             <div className="absolute top-2 left-2 bg-yellow-400 text-black px-2 py-1 rounded-md text-xs font-medium">
@@ -107,9 +107,9 @@ export function FoodCard({ menuItem }: FoodCardProps) {
           )}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Button 
-                variant="outline" 
-                size="icon" 
+              <Button
+                variant="outline"
+                size="icon"
                 className="rounded-full h-8 w-8"
                 onClick={() => handleQuantityChange(-1)}
                 disabled={quantity <= 1}
@@ -117,17 +117,17 @@ export function FoodCard({ menuItem }: FoodCardProps) {
                 <Minus className="h-3 w-3" />
               </Button>
               <span className="font-medium w-8 text-center">{quantity}</span>
-              <Button 
-                variant="outline" 
-                size="icon" 
+              <Button
+                variant="outline"
+                size="icon"
                 className="rounded-full h-8 w-8"
                 onClick={() => handleQuantityChange(1)}
               >
                 <Plus className="h-3 w-3" />
               </Button>
             </div>
-            <Button 
-              size="sm" 
+            <Button
+              size="sm"
               onClick={handleAddToCart}
               disabled={!menuItem.available}
               className="bg-green-600 hover:bg-green-700"
@@ -144,8 +144,8 @@ export function FoodCard({ menuItem }: FoodCardProps) {
             <DialogTitle>{menuItem.name}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
-            <img 
-              src={menuItem.image} 
+            <img
+              src={menuItem.image}
               alt={menuItem.name}
               className="w-full h-48 object-cover rounded-lg"
             />
