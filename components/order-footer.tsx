@@ -65,11 +65,10 @@ export function OrderFooter({ onPayment }: OrderFooterProps) {
             <Button
               key={method.id}
               variant={selectedPayment === method.id ? "default" : "outline"}
-              className={`flex flex-col items-center py-3 h-auto ${
-                selectedPayment === method.id 
-                  ? "bg-green-600 hover:bg-green-700" 
+              className={`flex flex-col items-center py-3 h-auto ${selectedPayment === method.id
+                  ? "bg-green-600 hover:bg-green-700"
                   : "hover:bg-green-50 hover:text-green-600"
-              }`}
+                }`}
               onClick={() => setSelectedPayment(method.id)}
             >
               <method.icon className="h-5 w-5 mb-1" />
@@ -104,7 +103,7 @@ export function OrderFooter({ onPayment }: OrderFooterProps) {
           </AlertDialogContent>
         </AlertDialog>
 
-        <Button 
+        <Button
           className="flex-1 bg-green-600 hover:bg-green-700"
           onClick={handlePayment}
           disabled={!selectedPayment || state.cart.length === 0}
