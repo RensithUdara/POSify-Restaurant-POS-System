@@ -28,82 +28,82 @@ import {
 } from "@/components/ui/tooltip"
 
 const navItems = [
-  { 
+  {
     id: 'menu',
-    icon: Menu, 
-    label: "Menu", 
+    icon: Menu,
+    label: "Menu",
     color: "text-green-600 bg-green-50",
     active: true,
     badge: null
   },
-  { 
+  {
     id: 'orders',
-    icon: ClipboardList, 
-    label: "Orders", 
+    icon: ClipboardList,
+    label: "Orders",
     color: "text-gray-600 hover:text-orange-600 hover:bg-orange-50",
     active: false,
     badge: 'pending'
   },
-  { 
+  {
     id: 'tables',
-    icon: TableBar, 
-    label: "Table Management", 
+    icon: TableBar,
+    label: "Table Management",
     color: "text-gray-600 hover:text-blue-600 hover:bg-blue-50",
     active: false,
     badge: null
   },
-  { 
+  {
     id: 'customers',
-    icon: Users, 
-    label: "Customers", 
+    icon: Users,
+    label: "Customers",
     color: "text-gray-600 hover:text-purple-600 hover:bg-purple-50",
     active: false,
     badge: null
   },
-  { 
+  {
     id: 'inventory',
-    icon: ShoppingBag, 
-    label: "Inventory", 
+    icon: ShoppingBag,
+    label: "Inventory",
     color: "text-gray-600 hover:text-indigo-600 hover:bg-indigo-50",
     active: false,
     badge: null
   },
-  { 
+  {
     id: 'analytics',
-    icon: BarChart3, 
-    label: "Analytics", 
+    icon: BarChart3,
+    label: "Analytics",
     color: "text-gray-600 hover:text-emerald-600 hover:bg-emerald-50",
     active: false,
     badge: null
   },
-  { 
+  {
     id: 'delivery',
-    icon: Truck, 
-    label: "Delivery", 
+    icon: Truck,
+    label: "Delivery",
     color: "text-gray-600 hover:text-red-600 hover:bg-red-50",
     active: false,
     badge: null
   },
-  { 
+  {
     id: 'reservations',
-    icon: CalendarRange, 
-    label: "Reservations", 
+    icon: CalendarRange,
+    label: "Reservations",
     color: "text-gray-600 hover:text-yellow-600 hover:bg-yellow-50",
     active: false,
     badge: null
   },
-  { 
+  {
     id: 'accounting',
-    icon: Calculator, 
-    label: "Accounting", 
+    icon: Calculator,
+    label: "Accounting",
     color: "text-gray-600 hover:text-cyan-600 hover:bg-cyan-50",
     active: false,
     badge: null
   },
-  { 
+  {
     id: 'settings',
-    icon: Settings, 
-    label: "Settings", 
+    icon: Settings,
+    label: "Settings",
     color: "text-gray-600 hover:text-gray-800 hover:bg-gray-50",
     active: false,
     badge: null
@@ -143,17 +143,16 @@ export function SidebarNav() {
 
       {/* Overlay for mobile */}
       {isMobile && isOpen && (
-        <div 
-          className="fixed inset-0 bg-black bg-opacity-50 z-30" 
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-30"
           onClick={() => setIsOpen(false)}
         />
       )}
 
       {/* Sidebar */}
       <div
-        className={`${
-          isMobile ? "fixed inset-y-0 left-0 z-40 transform transition-transform duration-200 ease-in-out" : "w-72"
-        } 
+        className={`${isMobile ? "fixed inset-y-0 left-0 z-40 transform transition-transform duration-200 ease-in-out" : "w-72"
+          } 
         ${isMobile && !isOpen ? "-translate-x-full" : "translate-x-0"} 
         bg-white border-r h-screen flex flex-col shadow-lg`}
       >
@@ -204,11 +203,10 @@ export function SidebarNav() {
                 <TooltipTrigger asChild>
                   <Button
                     variant="ghost"
-                    className={`w-full justify-start text-left h-12 transition-all duration-200 ${
-                      isActive 
-                        ? "bg-green-50 text-green-700 border-r-2 border-green-600" 
+                    className={`w-full justify-start text-left h-12 transition-all duration-200 ${isActive
+                        ? "bg-green-50 text-green-700 border-r-2 border-green-600"
                         : item.color
-                    }`}
+                      }`}
                     onClick={() => {
                       setActiveItem(item.id)
                       if (isMobile) setIsOpen(false)
@@ -241,7 +239,7 @@ export function SidebarNav() {
             <div className="flex justify-between">
               <span>Today's Sales:</span>
               <span className="font-medium text-green-600">
-                ${state.orders.reduce((sum, order) => 
+                ${state.orders.reduce((sum, order) =>
                   order.paymentStatus === 'paid' ? sum + order.total : sum, 0
                 ).toFixed(2)}
               </span>
@@ -251,9 +249,9 @@ export function SidebarNav() {
               <span className="font-medium">{state.orders.length}</span>
             </div>
           </div>
-          
-          <Button 
-            variant="ghost" 
+
+          <Button
+            variant="ghost"
             className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50"
           >
             <LogOut className="mr-3 h-4 w-4" />
