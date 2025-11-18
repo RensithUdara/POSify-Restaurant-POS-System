@@ -24,10 +24,12 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <POSProvider>
-            {children}
-            <Toaster />
-          </POSProvider>
+          <ErrorBoundary>
+            <POSProvider>
+              {children}
+              <Toaster />
+            </POSProvider>
+          </ErrorBoundary>
         </ThemeProvider>
       </body>
     </html>
