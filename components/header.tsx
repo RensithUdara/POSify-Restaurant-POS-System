@@ -23,7 +23,7 @@ export function Header() {
   ])
 
   const pendingOrders = state.orders.filter(order => order.status === 'pending').length
-  const todayRevenue = state.orders.reduce((sum, order) => 
+  const todayRevenue = state.orders.reduce((sum, order) =>
     order.paymentStatus === 'paid' ? sum + order.total : sum, 0
   )
 
@@ -34,9 +34,9 @@ export function Header() {
         {!isMobile && (
           <div className="flex-1 relative max-w-md">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-            <Input 
-              type="text" 
-              placeholder="Search menu items..." 
+            <Input
+              type="text"
+              placeholder="Search menu items..."
               className="pl-10 bg-gray-50 border-0 focus:bg-white"
             />
           </div>
@@ -60,7 +60,7 @@ export function Header() {
               <span className="font-medium">{pendingOrders}</span>
               <span className="text-gray-600">Pending</span>
             </div>
-            
+
             <div className="flex items-center gap-2 text-sm">
               <DollarSign className="h-4 w-4 text-green-500" />
               <span className="font-medium">${todayRevenue.toFixed(2)}</span>
@@ -120,9 +120,9 @@ export function Header() {
         <div className="px-4 pb-3">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-            <Input 
-              type="text" 
-              placeholder="Search menu items..." 
+            <Input
+              type="text"
+              placeholder="Search menu items..."
               className="pl-10 bg-gray-50 border-0 focus:bg-white"
             />
           </div>
