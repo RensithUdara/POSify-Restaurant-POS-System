@@ -54,7 +54,7 @@ export function FoodGrid() {
 
     // Filter by price range
     items = items.filter(item => {
-      const price = item.discount 
+      const price = item.discount
         ? item.price * (1 - item.discount / 100)
         : item.price
       return price >= filters.priceRange[0] && price <= filters.priceRange[1]
@@ -116,7 +116,7 @@ export function FoodGrid() {
       {/* Results count */}
       <div className="text-sm text-gray-500 text-center">
         Showing {filteredAndSortedItems.length} of {state.menuItems.length} items
-        {(searchQuery.trim() || JSON.stringify(filters) !== JSON.stringify(DEFAULT_FILTERS)) && 
+        {(searchQuery.trim() || JSON.stringify(filters) !== JSON.stringify(DEFAULT_FILTERS)) &&
           ` (filtered)`
         }
       </div>
