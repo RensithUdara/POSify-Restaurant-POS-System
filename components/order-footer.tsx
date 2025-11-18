@@ -1,7 +1,7 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { CreditCard, QrCode, Banknote, Trash2 } from "lucide-react"
+import { CreditCard, QrCode, Banknote, Trash2, ShoppingCart } from "lucide-react"
 import { usePOS } from "@/context/POSContext"
 import { useState } from "react"
 import {
@@ -15,6 +15,15 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+import { PaymentProcessing } from "./payment-processing"
+import { PaymentMethod } from "@/types"
+import { toast } from "sonner"
 
 interface OrderFooterProps {
   onPayment: (paymentType: string) => void
@@ -27,15 +36,29 @@ const paymentMethods = [
 ]
 
 export function OrderFooter({ onPayment }: OrderFooterProps) {
-  const { state, getCartTotal, clearCart } = usePOS()
+  const { state, getCartTotal, clearCart, createOrder } = usePOS()
   const { subtotal, tax, total } = getCartTotal()
   const [selectedPayment, setSelectedPayment] = useState<string | null>(null)
+  const [showPaymentDialog, setShowPaymentDialog] = useState(false)
 
   const handlePayment = () => {
-    if (selectedPayment) {
-      onPayment(selectedPayment)
-      setSelectedPayment(null)
+    if (state.cart.length === 0) {
+      toast.error("Cart is empty")
+      return
     }
+    setShowPaymentDialog(true)
+  }
+
+  const handlePaymentComplete = (paymentMethod: PaymentMethod) => {
+    createOrder(paymentMethod)
+    setShowPaymentDialog(false)
+    setSelectedPayment(null)
+    toast.success("Order placed successfully!")
+  }
+
+  const handlePaymentCancel = () => {
+    setShowPaymentDialog(false)
+    setSelectedPayment(null)
   }
 
   return (
@@ -57,24 +80,10 @@ export function OrderFooter({ onPayment }: OrderFooterProps) {
         </div>
       </div>
 
-      {/* Payment Methods */}
-      <div className="space-y-3">
-        <h3 className="text-sm font-medium text-gray-700">Payment Method</h3>
-        <div className="grid grid-cols-3 gap-2">
-          {paymentMethods.map((method) => (
-            <Button
-              key={method.id}
-              variant={selectedPayment === method.id ? "default" : "outline"}
-              className={`flex flex-col items-center py-3 h-auto ${selectedPayment === method.id
-                  ? "bg-green-600 hover:bg-green-700"
-                  : "hover:bg-green-50 hover:text-green-600"
-                }`}
-              onClick={() => setSelectedPayment(method.id)}
-            >
-              <method.icon className="h-5 w-5 mb-1" />
-              <span className="text-xs">{method.label}</span>
-            </Button>
-          ))}
+      {/* Quick Actions */}
+      <div className="space-y-2">
+        <div className="text-sm text-gray-600 text-center">
+          Ready to place order • {state.cart.length} items
         </div>
       </div>
 
@@ -104,13 +113,27 @@ export function OrderFooter({ onPayment }: OrderFooterProps) {
         </AlertDialog>
 
         <Button
-          className="flex-1 bg-green-600 hover:bg-green-700"
+          className="flex-1 bg-green-600 hover:bg-green-700 text-white h-12"
           onClick={handlePayment}
-          disabled={!selectedPayment || state.cart.length === 0}
+          disabled={state.cart.length === 0}
         >
-          {selectedPayment ? `Pay with ${paymentMethods.find(m => m.id === selectedPayment)?.label}` : 'Select Payment'}
+          <ShoppingCart className="h-4 w-4 mr-2" />
+          Place Order • ${total.toFixed(2)}
         </Button>
       </div>
+
+      {/* Payment Processing Dialog */}
+      <Dialog open={showPaymentDialog} onOpenChange={setShowPaymentDialog}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Complete Payment</DialogTitle>
+          </DialogHeader>
+          <PaymentProcessing
+            onPaymentComplete={handlePaymentComplete}
+            onCancel={handlePaymentCancel}
+          />
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
