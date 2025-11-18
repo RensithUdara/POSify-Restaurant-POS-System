@@ -3,6 +3,39 @@
 import React, { createContext, useContext, useReducer, useEffect } from 'react'
 import { CartItem, MenuItem, Order, Table, Customer, Settings } from '@/types'
 
+// Local Storage Keys
+const STORAGE_KEYS = {
+    CART: 'pos_cart',
+    ORDERS: 'pos_orders',
+    SETTINGS: 'pos_settings',
+    CURRENT_TABLE: 'pos_current_table',
+    CURRENT_CUSTOMER: 'pos_current_customer',
+    ORDER_TYPE: 'pos_order_type'
+}
+
+// Utility functions for localStorage
+const saveToStorage = (key: string, data: any) => {
+    try {
+        if (typeof window !== 'undefined') {
+            localStorage.setItem(key, JSON.stringify(data))
+        }
+    } catch (error) {
+        console.error('Error saving to localStorage:', error)
+    }
+}
+
+const getFromStorage = (key: string, defaultValue: any = null) => {
+    try {
+        if (typeof window !== 'undefined') {
+            const item = localStorage.getItem(key)
+            return item ? JSON.parse(item) : defaultValue
+        }
+    } catch (error) {
+        console.error('Error reading from localStorage:', error)
+    }
+    return defaultValue
+}
+
 interface POSState {
     cart: CartItem[]
     currentTable?: Table
@@ -29,32 +62,55 @@ type POSAction =
     | { type: 'SET_MENU_ITEMS'; payload: MenuItem[] }
     | { type: 'UPDATE_SETTINGS'; payload: Partial<Settings> }
 
-const initialState: POSState = {
-    cart: [],
-    orders: [],
-    menuItems: [],
-    categories: [
-        { id: 'all', name: 'All Items' },
-        { id: 'appetizers', name: 'Appetizers' },
-        { id: 'mains', name: 'Main Course' },
-        { id: 'desserts', name: 'Desserts' },
-        { id: 'beverages', name: 'Beverages' },
-        { id: 'salads', name: 'Salads' },
-        { id: 'burgers', name: 'Burgers' },
-        { id: 'pizzas', name: 'Pizzas' },
-    ],
-    selectedCategory: 'all',
-    orderType: 'dine-in',
-    settings: {
-        restaurantName: 'POSify Restaurant',
-        currency: 'USD',
-        taxRate: 0.08,
-        serviceCharge: 0.10,
-        orderAutoAccept: true,
-        printReceipts: true,
-        theme: 'light'
+const getInitialState = (): POSState => {
+    const defaultState: POSState = {
+        cart: [],
+        orders: [],
+        menuItems: [],
+        categories: [
+            { id: 'all', name: 'All Items' },
+            { id: 'appetizers', name: 'Appetizers' },
+            { id: 'mains', name: 'Main Course' },
+            { id: 'desserts', name: 'Desserts' },
+            { id: 'beverages', name: 'Beverages' },
+            { id: 'salads', name: 'Salads' },
+            { id: 'burgers', name: 'Burgers' },
+            { id: 'pizzas', name: 'Pizzas' },
+        ],
+        selectedCategory: 'all',
+        orderType: 'dine-in',
+        settings: {
+            restaurantName: 'POSify Restaurant',
+            currency: 'USD',
+            taxRate: 0.08,
+            serviceCharge: 0.10,
+            orderAutoAccept: true,
+            printReceipts: true,
+            theme: 'light'
+        }
+    }
+
+    // Load persisted data
+    return {
+        ...defaultState,
+        cart: getFromStorage(STORAGE_KEYS.CART, []),
+        orders: getFromStorage(STORAGE_KEYS.ORDERS, []).map((order: any) => ({
+            ...order,
+            createdAt: new Date(order.createdAt),
+            updatedAt: new Date(order.updatedAt),
+            servedAt: order.servedAt ? new Date(order.servedAt) : undefined
+        })),
+        currentTable: getFromStorage(STORAGE_KEYS.CURRENT_TABLE),
+        currentCustomer: getFromStorage(STORAGE_KEYS.CURRENT_CUSTOMER),
+        orderType: getFromStorage(STORAGE_KEYS.ORDER_TYPE, 'dine-in'),
+        settings: {
+            ...defaultState.settings,
+            ...getFromStorage(STORAGE_KEYS.SETTINGS, {})
+        }
     }
 }
+
+const initialState = getInitialState()
 
 function posReducer(state: POSState, action: POSAction): POSState {
     switch (action.type) {
@@ -63,26 +119,28 @@ function posReducer(state: POSState, action: POSAction): POSState {
                 item => item.menuItem.id === action.payload.menuItem.id
             )
 
+            let updatedCart
             if (existingItemIndex >= 0) {
-                const updatedCart = [...state.cart]
+                updatedCart = [...state.cart]
                 updatedCart[existingItemIndex].quantity += action.payload.quantity || 1
-                return { ...state, cart: updatedCart }
+            } else {
+                const newCartItem: CartItem = {
+                    id: `cart-${Date.now()}-${Math.random()}`,
+                    menuItem: action.payload.menuItem,
+                    quantity: action.payload.quantity || 1
+                }
+                updatedCart = [...state.cart, newCartItem]
             }
 
-            const newCartItem: CartItem = {
-                id: `cart-${Date.now()}-${Math.random()}`,
-                menuItem: action.payload.menuItem,
-                quantity: action.payload.quantity || 1
-            }
-
-            return { ...state, cart: [...state.cart, newCartItem] }
+            saveToStorage(STORAGE_KEYS.CART, updatedCart)
+            return { ...state, cart: updatedCart }
         }
 
-        case 'REMOVE_FROM_CART':
-            return {
-                ...state,
-                cart: state.cart.filter(item => item.id !== action.payload.itemId)
-            }
+        case 'REMOVE_FROM_CART': {
+            const updatedCart = state.cart.filter(item => item.id !== action.payload.itemId)
+            saveToStorage(STORAGE_KEYS.CART, updatedCart)
+            return { ...state, cart: updatedCart }
+        }
 
         case 'UPDATE_CART_ITEM': {
             const updatedCart = state.cart.map(item =>
@@ -91,30 +149,39 @@ function posReducer(state: POSState, action: POSAction): POSState {
                     : item
             ).filter(item => item.quantity > 0)
 
+            saveToStorage(STORAGE_KEYS.CART, updatedCart)
             return { ...state, cart: updatedCart }
         }
 
         case 'CLEAR_CART':
+            saveToStorage(STORAGE_KEYS.CART, [])
             return { ...state, cart: [] }
 
         case 'SET_CURRENT_TABLE':
+            saveToStorage(STORAGE_KEYS.CURRENT_TABLE, action.payload)
             return { ...state, currentTable: action.payload }
 
         case 'SET_CURRENT_CUSTOMER':
+            saveToStorage(STORAGE_KEYS.CURRENT_CUSTOMER, action.payload)
             return { ...state, currentCustomer: action.payload }
 
         case 'SET_ORDER_TYPE':
+            saveToStorage(STORAGE_KEYS.ORDER_TYPE, action.payload)
             return { ...state, orderType: action.payload }
 
         case 'SET_SELECTED_CATEGORY':
             return { ...state, selectedCategory: action.payload }
 
-        case 'CREATE_ORDER':
+        case 'CREATE_ORDER': {
+            const updatedOrders = [...state.orders, action.payload]
+            saveToStorage(STORAGE_KEYS.ORDERS, updatedOrders)
+            saveToStorage(STORAGE_KEYS.CART, [])
             return {
                 ...state,
-                orders: [...state.orders, action.payload],
+                orders: updatedOrders,
                 cart: []
             }
+        }
 
         case 'UPDATE_ORDER': {
             const updatedOrders = state.orders.map(order =>
@@ -122,17 +189,21 @@ function posReducer(state: POSState, action: POSAction): POSState {
                     ? { ...order, ...action.payload.updates, updatedAt: new Date() }
                     : order
             )
+            saveToStorage(STORAGE_KEYS.ORDERS, updatedOrders)
             return { ...state, orders: updatedOrders }
         }
 
         case 'SET_MENU_ITEMS':
             return { ...state, menuItems: action.payload }
 
-        case 'UPDATE_SETTINGS':
+        case 'UPDATE_SETTINGS': {
+            const updatedSettings = { ...state.settings, ...action.payload }
+            saveToStorage(STORAGE_KEYS.SETTINGS, updatedSettings)
             return {
                 ...state,
-                settings: { ...state.settings, ...action.payload }
+                settings: updatedSettings
             }
+        }
 
         default:
             return state
