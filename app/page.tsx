@@ -35,7 +35,6 @@ export default function POSPage() {
                   Choose your favorite items from our menu
                 </p>
               </div>
-              <CategoryFilter />
               <FoodGrid />
             </div>
           </main>

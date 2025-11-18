@@ -41,6 +41,7 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog"
 import { Order } from "@/types"
+import { ReceiptSystem } from "../../components/receipt-system"
 
 const statusIcons = {
     pending: Clock,
@@ -68,6 +69,8 @@ export default function OrdersPage() {
     const { state, dispatch } = usePOS()
     const [selectedStatus, setSelectedStatus] = useState<string>("all")
     const [selectedOrder, setSelectedOrder] = useState<Order | null>(null)
+    const [showReceiptDialog, setShowReceiptDialog] = useState(false)
+    const [receiptOrder, setReceiptOrder] = useState<Order | null>(null)
 
     const filteredOrders = selectedStatus === "all"
         ? state.orders
@@ -93,6 +96,42 @@ export default function OrdersPage() {
             hour: '2-digit',
             minute: '2-digit',
         }).format(new Date(date))
+    }
+
+    const formatCurrency = (amount: number) => {
+        return new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: state.settings.currency
+        }).format(amount)
+    }
+
+    const handleGenerateReceipt = (order: Order) => {
+        setReceiptOrder(order)
+        setShowReceiptDialog(true)
+    }
+
+    const handleRefund = (orderId: string) => {
+        dispatch({
+            type: 'UPDATE_ORDER',
+            payload: {
+                orderId,
+                updates: {
+                    paymentStatus: 'refunded',
+                    status: 'cancelled'
+                }
+            }
+        })
+    }
+
+    const getStatusBadgeVariant = (status: Order['status']) => {
+        switch (status) {
+            case 'pending': return 'secondary'
+            case 'preparing': return 'default'
+            case 'ready': return 'outline'
+            case 'served': return 'default'
+            case 'cancelled': return 'destructive'
+            default: return 'secondary'
+        }
     }
 
     return (
