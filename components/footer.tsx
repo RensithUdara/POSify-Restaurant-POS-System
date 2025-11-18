@@ -4,11 +4,11 @@ import { useMobile } from "@/hooks/use-mobile"
 import { usePOS } from "@/context/POSContext"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { 
-  Clock, 
-  ChefHat, 
-  Wifi, 
-  WifiOff, 
+import {
+  Clock,
+  ChefHat,
+  Wifi,
+  WifiOff,
   AlertCircle,
   CheckCircle2,
   Users,
@@ -45,11 +45,11 @@ export function Footer() {
     }
   }, [])
 
-  const activeOrders = state.orders.filter(order => 
+  const activeOrders = state.orders.filter(order =>
     order.status === 'pending' || order.status === 'preparing'
   )
 
-  const todayRevenue = state.orders.reduce((sum, order) => 
+  const todayRevenue = state.orders.reduce((sum, order) =>
     order.paymentStatus === 'paid' ? sum + order.total : sum, 0
   )
 
@@ -69,17 +69,15 @@ export function Footer() {
           <div className="flex gap-2 overflow-x-auto">
             {activeOrders.slice(0, 5).map((order) => {
               const isProcessing = order.status === 'preparing'
-              
+
               return (
                 <div
                   key={order.id}
-                  className={`flex items-center gap-2 px-3 py-2 rounded-lg min-w-[160px] ${
-                    isProcessing ? 'bg-blue-100' : 'bg-yellow-100'
-                  }`}
+                  className={`flex items-center gap-2 px-3 py-2 rounded-lg min-w-[160px] ${isProcessing ? 'bg-blue-100' : 'bg-yellow-100'
+                    }`}
                 >
-                  <div className={`w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-medium ${
-                    isProcessing ? 'bg-blue-500' : 'bg-yellow-500'
-                  }`}>
+                  <div className={`w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-medium ${isProcessing ? 'bg-blue-500' : 'bg-yellow-500'
+                    }`}>
                     {order.tableId ? `T${order.tableId.split('-')[1]}` : 'TO'}
                   </div>
                   <div className="flex-1 min-w-0">
@@ -96,7 +94,7 @@ export function Footer() {
                 </div>
               )
             })}
-            
+
             {activeOrders.length > 5 && (
               <div className="flex items-center px-3 py-2 bg-gray-100 rounded-lg min-w-[60px]">
                 <span className="text-xs font-medium text-gray-600">
@@ -172,7 +170,7 @@ export function Footer() {
             <Badge variant="outline" className="text-xs">
               {state.settings.restaurantName}
             </Badge>
-            
+
             {isOnline ? (
               <Badge className="text-xs bg-green-100 text-green-700">
                 <CheckCircle2 className="h-3 w-3 mr-1" />
