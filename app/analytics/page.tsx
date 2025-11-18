@@ -177,9 +177,32 @@ export default function AnalyticsPage() {
                 <div className="flex-1 overflow-auto p-6">
                     <div className="max-w-7xl mx-auto">
                         {/* Page Header */}
-                        <div className="mb-6">
-                            <h1 className="text-2xl font-bold text-gray-900 mb-2">Analytics & Reports</h1>
-                            <p className="text-gray-600">Track performance and insights for your restaurant</p>
+                        <div className="mb-6 flex justify-between items-start">
+                            <div>
+                                <h1 className="text-2xl font-bold text-gray-900 mb-2">Analytics & Reports</h1>
+                                <p className="text-gray-600">Track performance and insights for your restaurant</p>
+                            </div>
+                            <div className="flex gap-2">
+                                <Select value={dateRange} onValueChange={setDateRange}>
+                                    <SelectTrigger className="w-40">
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="today">Today</SelectItem>
+                                        <SelectItem value="week">This Week</SelectItem>
+                                        <SelectItem value="month">This Month</SelectItem>
+                                        <SelectItem value="all">All Time</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                <Button variant="outline" size="sm">
+                                    <RefreshCw className="h-4 w-4 mr-2" />
+                                    Refresh
+                                </Button>
+                                <Button variant="outline" size="sm">
+                                    <Download className="h-4 w-4 mr-2" />
+                                    Export
+                                </Button>
+                            </div>
                         </div>
 
                         {/* Key Metrics */}
@@ -190,7 +213,7 @@ export default function AnalyticsPage() {
                                         <div>
                                             <p className="text-sm font-medium text-gray-600">Total Revenue</p>
                                             <p className="text-3xl font-bold text-green-600">
-                                                ${totalRevenue.toFixed(2)}
+                                                {formatCurrency(analyticsData.totalRevenue)}
                                             </p>
                                             <p className="text-sm text-green-600 mt-1">
                                                 <TrendingUp className="inline h-4 w-4 mr-1" />
@@ -208,7 +231,7 @@ export default function AnalyticsPage() {
                                         <div>
                                             <p className="text-sm font-medium text-gray-600">Total Orders</p>
                                             <p className="text-3xl font-bold text-blue-600">
-                                                {totalOrders}
+                                                {analyticsData.totalOrders}
                                             </p>
                                             <p className="text-sm text-blue-600 mt-1">
                                                 <TrendingUp className="inline h-4 w-4 mr-1" />
@@ -226,7 +249,7 @@ export default function AnalyticsPage() {
                                         <div>
                                             <p className="text-sm font-medium text-gray-600">Avg Order Value</p>
                                             <p className="text-3xl font-bold text-purple-600">
-                                                ${avgOrderValue.toFixed(2)}
+                                                {formatCurrency(analyticsData.avgOrderValue)}
                                             </p>
                                             <p className="text-sm text-purple-600 mt-1">
                                                 <TrendingUp className="inline h-4 w-4 mr-1" />
@@ -244,7 +267,7 @@ export default function AnalyticsPage() {
                                         <div>
                                             <p className="text-sm font-medium text-gray-600">Completion Rate</p>
                                             <p className="text-3xl font-bold text-orange-600">
-                                                {completionRate.toFixed(1)}%
+                                                {analyticsData.completionRate.toFixed(1)}%
                                             </p>
                                             <p className="text-sm text-orange-600 mt-1">
                                                 <TrendingUp className="inline h-4 w-4 mr-1" />
@@ -269,7 +292,7 @@ export default function AnalyticsPage() {
                                 </CardHeader>
                                 <CardContent>
                                     <ResponsiveContainer width="100%" height={300}>
-                                        <BarChart data={salesData}>
+                                        <BarChart data={analyticsData.salesData}>
                                             <CartesianGrid strokeDasharray="3 3" />
                                             <XAxis dataKey="hour" />
                                             <YAxis />
@@ -297,7 +320,7 @@ export default function AnalyticsPage() {
                                     <ResponsiveContainer width="100%" height={300}>
                                         <PieChart>
                                             <Pie
-                                                data={categoryData}
+                                                data={analyticsData.categoryData}
                                                 cx="50%"
                                                 cy="50%"
                                                 innerRadius={60}
@@ -305,7 +328,7 @@ export default function AnalyticsPage() {
                                                 paddingAngle={5}
                                                 dataKey="value"
                                             >
-                                                {categoryData.map((entry, index) => (
+                                                {analyticsData.categoryData.map((entry: any, index: number) => (
                                                     <Cell key={`cell-${index}`} fill={entry.color} />
                                                 ))}
                                             </Pie>
@@ -411,11 +434,11 @@ export default function AnalyticsPage() {
                                             <div className="mt-2 bg-gray-200 rounded-full h-2">
                                                 <div
                                                     className="bg-green-600 h-2 rounded-full transition-all duration-300"
-                                                    style={{ width: `${Math.min((totalRevenue / 2500) * 100, 100)}%` }}
+                                                    style={{ width: `${Math.min((analyticsData.totalRevenue / 2500) * 100, 100)}%` }}
                                                 />
                                             </div>
                                             <p className="text-sm text-gray-600 mt-1">
-                                                {((totalRevenue / 2500) * 100).toFixed(1)}% of daily target
+                                                {((analyticsData.totalRevenue / 2500) * 100).toFixed(1)}% of daily target
                                             </p>
                                         </div>
                                     </div>
