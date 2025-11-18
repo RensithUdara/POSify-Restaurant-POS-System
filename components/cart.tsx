@@ -1,15 +1,23 @@
 "use client"
 
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { CreditCard, QrCode, Banknote, Edit2, X } from "lucide-react"
+import { Input } from "@/components/ui/input"
+import { CreditCard, QrCode, Banknote, Edit2, X, Minus, Plus, Trash2, User, Phone } from "lucide-react"
 import { useMobile } from "@/hooks/use-mobile"
-
-const cartItems = [
-  { title: "Original Chess Meat Burger With Chips (Non Veg)", price: 23.99, quantity: 1 },
-  { title: "Fresh Orange Juice With Basil Seed No Sugar (Veg)", price: 12.99, quantity: 1 },
-  { title: "Meat Sushi Maki With Tuna, Ship And Other (Non Veg)", price: 9.99, quantity: 1 },
-  { title: "Tacos Salsa With Chickens Grilled", price: 14.99, quantity: 1 },
-]
+import { usePOS } from "@/context/POSContext"
+import { CartItem } from "./cart-item"
+import { DiningMode } from "./dining-mode"
+import { OrderFooter } from "./order-footer"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { Label } from "@/components/ui/label"
+import { toast } from "sonner"
 
 interface CartProps {
   onClose?: () => void
@@ -17,89 +25,155 @@ interface CartProps {
 
 export function Cart({ onClose }: CartProps) {
   const isMobile = useMobile()
-  const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0)
-  const tax = subtotal * 0.05
-  const total = subtotal + tax
+  const { state, dispatch, getCartTotal, createOrder, clearCart } = usePOS()
+  const [showCustomerDialog, setShowCustomerDialog] = useState(false)
+  const [customerName, setCustomerName] = useState(state.currentCustomer?.name || "")
+  const [customerPhone, setCustomerPhone] = useState(state.currentCustomer?.phone || "")
+  const [tableNumber, setTableNumber] = useState(state.currentTable?.number || 4)
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<string | null>(null)
+
+  const { subtotal, tax, total } = getCartTotal()
+
+  const handleCustomerSave = () => {
+    if (customerName.trim()) {
+      dispatch({
+        type: 'SET_CURRENT_CUSTOMER',
+        payload: {
+          id: `customer-${Date.now()}`,
+          name: customerName.trim(),
+          phone: customerPhone.trim() || undefined
+        }
+      })
+
+      dispatch({
+        type: 'SET_CURRENT_TABLE',
+        payload: {
+          id: `table-${tableNumber}`,
+          number: tableNumber,
+          capacity: 4,
+          status: 'occupied'
+        }
+      })
+
+      setShowCustomerDialog(false)
+      toast.success("Customer information saved")
+    }
+  }
+
+  const handlePayment = (paymentType: string) => {
+    if (state.cart.length === 0) {
+      toast.error("Cart is empty")
+      return
+    }
+
+    setSelectedPaymentMethod(paymentType)
+
+    // Create order with payment method
+    createOrder({ type: paymentType })
+
+    toast.success(`Order placed successfully! Payment: ${paymentType}`)
+    setSelectedPaymentMethod(null)
+  }
+
+  const isEmpty = state.cart.length === 0
 
   return (
-    <div className={`${isMobile ? "fixed inset-0 z-50" : "w-[380px]"} bg-white border-l flex flex-col h-full`}>
-      <div className="p-4 border-b flex justify-between items-center">
-        <div>
-          <h2 className="text-xl font-bold">Table 4</h2>
-          <p className="text-sm text-gray-500">Floyd Miles</p>
+    <div className={`${isMobile ? "fixed inset-0 z-50" : "w-[400px]"} bg-white border-l flex flex-col h-full shadow-lg`}>
+      {/* Header */}
+      <div className="p-4 border-b bg-gray-50">
+        <div className="flex justify-between items-center mb-2">
+          <div>
+            <h2 className="text-xl font-bold">Table {tableNumber}</h2>
+            <p className="text-sm text-gray-600">
+              {state.currentCustomer?.name || "Walk-in Customer"}
+            </p>
+          </div>
+          <div className="flex gap-2">
+            <Dialog open={showCustomerDialog} onOpenChange={setShowCustomerDialog}>
+              <DialogTrigger asChild>
+                <Button variant="outline" size="icon">
+                  <Edit2 className="h-4 w-4" />
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Customer Information</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4">
+                  <div>
+                    <Label htmlFor="table">Table Number</Label>
+                    <Input
+                      id="table"
+                      type="number"
+                      value={tableNumber}
+                      onChange={(e) => setTableNumber(parseInt(e.target.value) || 1)}
+                      min="1"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="name">Customer Name</Label>
+                    <Input
+                      id="name"
+                      value={customerName}
+                      onChange={(e) => setCustomerName(e.target.value)}
+                      placeholder="Enter customer name"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="phone">Phone Number (Optional)</Label>
+                    <Input
+                      id="phone"
+                      value={customerPhone}
+                      onChange={(e) => setCustomerPhone(e.target.value)}
+                      placeholder="Enter phone number"
+                    />
+                  </div>
+                  <Button onClick={handleCustomerSave} className="w-full">
+                    Save Information
+                  </Button>
+                </div>
+              </DialogContent>
+            </Dialog>
+
+            {onClose && (
+              <Button variant="outline" size="icon" onClick={onClose}>
+                <X className="h-4 w-4" />
+              </Button>
+            )}
+          </div>
         </div>
-        {onClose ? (
-          <Button variant="ghost" size="icon" onClick={onClose}>
-            <X className="h-5 w-5" />
-          </Button>
+
+        <DiningMode />
+      </div>
+
+      {/* Cart Items */}
+      <div className="flex-1 overflow-auto">
+        {isEmpty ? (
+          <div className="flex flex-col items-center justify-center h-full p-8 text-center">
+            <div className="text-gray-400 mb-4">
+              <svg className="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6" />
+              </svg>
+            </div>
+            <h3 className="text-lg font-medium text-gray-600 mb-2">Your cart is empty</h3>
+            <p className="text-gray-500">Add some items from the menu to get started</p>
+          </div>
         ) : (
-          <Button variant="ghost" size="icon">
-            <Edit2 className="h-5 w-5" />
-          </Button>
+          <div className="p-4 space-y-3">
+            {state.cart.map((item) => (
+              <CartItem key={item.id} item={item} />
+            ))}
+          </div>
         )}
       </div>
-      <div className="p-4 border-b">
-        <div className="flex gap-2 mb-4">
-          <Button variant="secondary" className="flex-1 rounded-full">
-            Dine in
-          </Button>
-          <Button variant="outline" className="flex-1 rounded-full">
-            Take Away
-          </Button>
-          <Button variant="outline" className="flex-1 rounded-full">
-            Delivery
-          </Button>
-        </div>
-      </div>
-      <div className="flex-1 overflow-auto p-4">
-        {cartItems.map((item, index) => (
-          <div key={index} className="flex items-center gap-3 mb-4">
-            <img
-              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202025-01-12%20at%2012.32.42%20PM-QicgA83ZI0TfZlOynDOqlhOGnbwzEv.jpeg"
-              alt={item.title}
-              className="w-16 h-16 rounded-lg object-cover"
-            />
-            <div className="flex-1">
-              <h4 className="text-sm font-medium">{item.title}</h4>
-              <div className="flex justify-between items-center mt-1">
-                <span className="text-green-600 font-bold">${item.price.toFixed(2)}</span>
-                <span className="text-sm text-gray-500">{item.quantity}X</span>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-      <div className="border-t p-4">
-        <div className="space-y-2 mb-4">
-          <div className="flex justify-between text-sm">
-            <span className="text-gray-600">Sub Total</span>
-            <span>${subtotal.toFixed(2)}</span>
-          </div>
-          <div className="flex justify-between text-sm">
-            <span className="text-gray-600">Tax 5%</span>
-            <span>${tax.toFixed(2)}</span>
-          </div>
-          <div className="flex justify-between font-bold">
-            <span>Total Amount</span>
-            <span>${total.toFixed(2)}</span>
-          </div>
-        </div>
-        <div className="grid grid-cols-3 gap-2 mb-4">
-          <Button variant="outline" className="flex flex-col items-center py-2">
-            <Banknote className="h-5 w-5 mb-1" />
-            <span className="text-xs">Cash</span>
-          </Button>
-          <Button variant="outline" className="flex flex-col items-center py-2">
-            <CreditCard className="h-5 w-5 mb-1" />
-            <span className="text-xs">Credit/Debit Card</span>
-          </Button>
-          <Button variant="outline" className="flex flex-col items-center py-2">
-            <QrCode className="h-5 w-5 mb-1" />
-            <span className="text-xs">QR Code</span>
-          </Button>
-        </div>
-        <Button className="w-full bg-green-600 hover:bg-green-700 text-white h-12">Place Order</Button>
-      </div>
+
+      {/* Footer */}
+      {!isEmpty && <OrderFooter onPayment={handlePayment} />}
     </div>
+  )
+}
+<Button className="w-full bg-green-600 hover:bg-green-700 text-white h-12">Place Order</Button>
+      </div >
+    </div >
   )
 }
