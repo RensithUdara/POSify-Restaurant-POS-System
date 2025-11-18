@@ -172,8 +172,3 @@ export function Cart({ onClose }: CartProps) {
     </div>
   )
 }
-<Button className="w-full bg-green-600 hover:bg-green-700 text-white h-12">Place Order</Button>
-      </div >
-    </div >
-  )
-}
