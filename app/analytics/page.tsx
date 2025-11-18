@@ -60,17 +60,17 @@ export default function AnalyticsPage() {
         let filteredOrders = state.orders
         switch (dateRange) {
             case "today":
-                filteredOrders = state.orders.filter(order => 
+                filteredOrders = state.orders.filter(order =>
                     new Date(order.createdAt) >= startOfDay
                 )
                 break
             case "week":
-                filteredOrders = state.orders.filter(order => 
+                filteredOrders = state.orders.filter(order =>
                     new Date(order.createdAt) >= startOfWeek
                 )
                 break
             case "month":
-                filteredOrders = state.orders.filter(order => 
+                filteredOrders = state.orders.filter(order =>
                     new Date(order.createdAt) >= startOfMonth
                 )
                 break
@@ -91,7 +91,7 @@ export default function AnalyticsPage() {
                 const orderHour = new Date(order.createdAt).getHours()
                 return orderHour === hour
             })
-            const hourSales = hourOrders.reduce((sum, order) => 
+            const hourSales = hourOrders.reduce((sum, order) =>
                 order.paymentStatus === 'paid' ? sum + order.total : sum, 0
             )
             return {
@@ -107,7 +107,7 @@ export default function AnalyticsPage() {
             order.items.forEach(item => {
                 const category = item.menuItem.category
                 const current = categoryMap.get(category) || { count: 0, revenue: 0 }
-                const itemPrice = item.menuItem.discount 
+                const itemPrice = item.menuItem.discount
                     ? item.menuItem.price * (1 - item.menuItem.discount / 100)
                     : item.menuItem.price
                 categoryMap.set(category, {
@@ -130,7 +130,7 @@ export default function AnalyticsPage() {
             order.items.forEach(item => {
                 const itemId = item.menuItem.id
                 const current = itemMap.get(itemId) || { count: 0, revenue: 0, item: item.menuItem }
-                const itemPrice = item.menuItem.discount 
+                const itemPrice = item.menuItem.discount
                     ? item.menuItem.price * (1 - item.menuItem.discount / 100)
                     : item.menuItem.price
                 itemMap.set(itemId, {
