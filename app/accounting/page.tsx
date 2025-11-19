@@ -7,26 +7,26 @@ import { Footer } from "../../components/footer"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 export default function AccountingPage() {
-  return (
-    <div className="min-h-screen md:flex">
-      <aside className="w-72 hidden md:block">
-        <SidebarNav />
-      </aside>
+    return (
+        <div className="min-h-screen md:flex">
+            <aside className="w-72 hidden md:block">
+                <SidebarNav />
+            </aside>
 
-      <main className="flex-1 p-6">
-        <Header />
+            <main className="flex-1 p-6">
+                <Header />
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Accounting</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p>Accounting and financial reports will be available here.</p>
-          </CardContent>
-        </Card>
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Accounting</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <p>Accounting and financial reports will be available here.</p>
+                    </CardContent>
+                </Card>
 
-        <Footer />
-      </main>
-    </div>
-  )
+                <Footer />
+            </main>
+        </div>
+    )
 }
