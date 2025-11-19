@@ -219,7 +219,7 @@ export function PaymentProcessing({ order, onPaymentComplete, onCancel }: Paymen
                 completed: true,
                 digitalWallet: {
                     provider: digitalProvider,
-                    reference: paymentMethod.details.reference
+                    reference: paymentMethod.details?.reference || 'N/A'
                 }
             })
 
