@@ -132,7 +132,7 @@ export async function POST(request: NextRequest) {
                 spiceLevel: data.spiceLevel || 'medium'
             },
             createdAt: new Date(),
-            lastOrderAt: null
+            lastOrderAt: null as Date | null
         }
 
         customers.push(newCustomer)
