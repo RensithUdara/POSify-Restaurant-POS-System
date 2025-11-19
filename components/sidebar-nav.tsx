@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useMobile } from "@/hooks/use-mobile"
 import { usePOS } from "@/context/POSContext"
 import {
@@ -18,6 +18,7 @@ import {
   ShoppingBag,
   X,
 } from "lucide-react"
+import { usePathname, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import {
