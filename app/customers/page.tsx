@@ -147,8 +147,8 @@ export default function CustomersPage() {
             const query = searchQuery.toLowerCase()
             return (
                 customer.name.toLowerCase().includes(query) ||
-                customer.phone.includes(query) ||
-                customer.email.toLowerCase().includes(query)
+                (customer.phone && customer.phone.includes(query)) ||
+                (customer.email && customer.email.toLowerCase().includes(query))
             )
         })
         .sort((a, b) => {

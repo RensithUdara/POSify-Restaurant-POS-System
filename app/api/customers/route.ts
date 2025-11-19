@@ -16,7 +16,7 @@ let customers = [
             spiceLevel: 'medium'
         },
         createdAt: new Date('2024-01-15'),
-        lastOrderAt: new Date('2024-11-18')
+        lastOrderAt: new Date('2024-11-18') as Date | null
     },
     {
         id: 'cust_2',
@@ -32,7 +32,7 @@ let customers = [
             spiceLevel: 'mild'
         },
         createdAt: new Date('2024-02-10'),
-        lastOrderAt: new Date('2024-11-17')
+        lastOrderAt: new Date('2024-11-17') as Date | null
     }
 ]
 
@@ -66,7 +66,9 @@ export async function GET(request: NextRequest) {
                 case 'totalSpent':
                     return b.totalSpent - a.totalSpent
                 case 'lastOrder':
-                    return new Date(b.lastOrderAt).getTime() - new Date(a.lastOrderAt).getTime()
+                    const aTime = a.lastOrderAt ? new Date(a.lastOrderAt).getTime() : 0
+                    const bTime = b.lastOrderAt ? new Date(b.lastOrderAt).getTime() : 0
+                    return bTime - aTime
                 default:
                     return 0
             }
@@ -132,7 +134,7 @@ export async function POST(request: NextRequest) {
                 spiceLevel: data.spiceLevel || 'medium'
             },
             createdAt: new Date(),
-            lastOrderAt: null
+            lastOrderAt: null as Date | null
         }
 
         customers.push(newCustomer)
