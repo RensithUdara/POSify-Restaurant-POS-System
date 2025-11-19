@@ -66,7 +66,9 @@ export async function GET(request: NextRequest) {
                 case 'totalSpent':
                     return b.totalSpent - a.totalSpent
                 case 'lastOrder':
-                    return new Date(b.lastOrderAt).getTime() - new Date(a.lastOrderAt).getTime()
+                    const aTime = a.lastOrderAt ? new Date(a.lastOrderAt).getTime() : 0
+                    const bTime = b.lastOrderAt ? new Date(b.lastOrderAt).getTime() : 0
+                    return bTime - aTime
                 default:
                     return 0
             }
