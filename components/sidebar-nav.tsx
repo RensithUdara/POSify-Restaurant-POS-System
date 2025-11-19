@@ -116,6 +116,32 @@ export function SidebarNav() {
   const [activeItem, setActiveItem] = useState('menu')
   const isMobile = useMobile()
   const { state } = usePOS()
+  const router = useRouter()
+  const pathname = usePathname()
+
+  const routeMap: Record<string, string> = {
+    menu: "/",
+    orders: "/orders",
+    tables: "/tables",
+    customers: "/customers",
+    inventory: "/inventory",
+    analytics: "/analytics",
+    delivery: "/delivery",
+    reservations: "/reservations",
+    accounting: "/accounting",
+    settings: "/settings",
+  }
+
+  useEffect(() => {
+    if (!pathname) return
+
+    // Determine active item from current pathname
+    const found = Object.entries(routeMap).find(([key, route]) =>
+      route === "/" ? pathname === "/" : pathname.startsWith(route)
+    )
+
+    if (found) setActiveItem(found[0])
+  }, [pathname])
 
   const pendingOrders = state.orders.filter(order => order.status === 'pending').length
 
@@ -205,12 +231,19 @@ export function SidebarNav() {
                   <Button
                     variant="ghost"
                     className={`w-full justify-start text-left h-12 transition-all duration-200 ${isActive
-                        ? "bg-green-50 text-green-700 border-r-2 border-green-600"
-                        : item.color
+                      ? "bg-green-50 text-green-700 border-r-2 border-green-600"
+                      : item.color
                       }`}
                     onClick={() => {
                       setActiveItem(item.id)
                       if (isMobile) setIsOpen(false)
+                      const to = routeMap[item.id] || "/"
+                      try {
+                        router.push(to)
+                      } catch (e) {
+                        // fallback: update hash for non-router environments
+                        window.location.href = to
+                      }
                     }}
                   >
                     <div className="flex items-center justify-between w-full">
