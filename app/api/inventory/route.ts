@@ -160,8 +160,8 @@ export async function POST(request: NextRequest) {
             supplier: data.supplier || '',
             lastRestocked: new Date(),
             expiryDate: data.expiryDate ? new Date(data.expiryDate) : null,
-            status: data.currentStock <= 0 ? 'out-of-stock' : 
-                   data.currentStock <= data.minStock ? 'low-stock' : 'in-stock'
+            status: data.currentStock <= 0 ? 'out-of-stock' :
+                data.currentStock <= data.minStock ? 'low-stock' : 'in-stock'
         }
 
         inventory.push(newItem)
