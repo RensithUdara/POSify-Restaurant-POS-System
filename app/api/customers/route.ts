@@ -16,7 +16,7 @@ let customers = [
             spiceLevel: 'medium'
         },
         createdAt: new Date('2024-01-15'),
-        lastOrderAt: new Date('2024-11-18')
+        lastOrderAt: new Date('2024-11-18') as Date | null
     },
     {
         id: 'cust_2',
@@ -32,7 +32,7 @@ let customers = [
             spiceLevel: 'mild'
         },
         createdAt: new Date('2024-02-10'),
-        lastOrderAt: new Date('2024-11-17')
+        lastOrderAt: new Date('2024-11-17') as Date | null
     }
 ]
 
