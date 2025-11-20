@@ -9,7 +9,7 @@ import { Cart } from "../components/cart"
 import { Footer } from "../components/footer"
 import { useMobile } from "@/hooks/use-mobile"
 import { usePOS } from "@/context/POSContext"
-import { ShoppingCart, TrendingUp, Clock, DollarSign, Users, ChefHat } from "lucide-react"
+import { ShoppingCart, TrendingUp, Clock, DollarSign, Users, ChefHat, User, ClipboardList } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
