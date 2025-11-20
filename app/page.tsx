@@ -220,20 +220,14 @@ export default function POSPage() {
             </div>
           </main>
 
-          {/* Mobile Cart Button */}
+          {/* Mobile Cart Button - Ultra Enhanced */}
           {isMobile && !cartOpen && (
-            <div className="fixed bottom-6 right-6 z-50">
-              <Button
-                className="relative rounded-full h-16 w-16 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 shadow-2xl transform transition-all duration-200 hover:scale-110"
-                onClick={() => setCartOpen(true)}
-              >
-                <ShoppingCart className="h-7 w-7 text-white" />
-                {totalCartItems > 0 && (
-                  <div className="absolute -top-2 -right-2 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-full h-7 w-7 flex items-center justify-center text-xs font-bold ring-2 ring-white shadow-lg">
-                    {totalCartItems > 99 ? '99+' : totalCartItems}
-                  </div>
-                )}
-              </Button>
+            <div className="fixed bottom-8 right-6 z-50">
+              <div className="relative group">
+                {/* Outer glow ring */}
+                <div className="absolute -inset-3 bg-gradient-to-r from-green-400 via-blue-400 to-purple-400 rounded-full blur-lg opacity-30 group-hover:opacity-60 animate-pulse"></div>
+                \n                {/* Middle glow ring */}\n                <div className="absolute -inset-2 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full blur opacity-50 group-hover:opacity-75 transition duration-500"></div>\n                \n                <Button\n                  className="relative rounded-full h-18 w-18 bg-gradient-to-br from-green-500 via-green-600 to-emerald-700 hover:from-green-600 hover:via-emerald-600 hover:to-green-700 shadow-2xl transform transition-all duration-300 hover:scale-110 active:scale-95 border-4 border-white/50"\n                  onClick={() => setCartOpen(true)}\n                >\n                  {/* Inner shine effect */}\n                  <div className="absolute inset-1 rounded-full bg-gradient-to-br from-white/20 to-transparent"></div>\n                  \n                  <ShoppingCart className="relative h-8 w-8 text-white drop-shadow-lg" />\n                  \n                  {totalCartItems > 0 && (\n                    <div className="absolute -top-3 -right-3 animate-bounce">\n                      <div className="relative">\n                        <div className="absolute inset-0 bg-gradient-to-r from-red-400 to-orange-500 rounded-full blur-sm opacity-75"></div>\n                        <div className="relative bg-gradient-to-r from-red-500 to-orange-600 text-white rounded-full h-8 w-8 flex items-center justify-center text-sm font-black ring-4 ring-white shadow-2xl">\n                          {totalCartItems > 99 ? '99+' : totalCartItems}\n                        </div>\n                      </div>\n                    </div>\n                  )}\n                </Button>\n                \n                {/* Floating particles */}\n                <div className="absolute inset-0 pointer-events-none">\n                  <div className="absolute -top-1 -left-1 w-2 h-2 bg-white/40 rounded-full animate-ping" style={{animationDelay: '0s'}}></div>\n                  <div className="absolute -bottom-1 -right-1 w-1.5 h-1.5 bg-green-300/60 rounded-full animate-ping" style={{animationDelay: '1s'}}></div>\n                  <div className="absolute top-0 -right-2 w-1 h-1 bg-blue-300/60 rounded-full animate-ping" style={{animationDelay: '2s'}}></div>\n                </div>
+              </div>
             </div>
           )}
 
