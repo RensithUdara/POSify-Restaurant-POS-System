@@ -22,14 +22,9 @@ export function Header() {
     { id: 3, message: "Low stock: Caesar Salad", time: "10 min ago", type: "info" },
   ])
 
-  const pendingOrders = state.orders.filter(order => order.status === 'pending').length
-  const todayRevenue = state.orders.reduce((sum, order) =>
-    order.paymentStatus === 'paid' ? sum + order.total : sum, 0
-  )
-
   return (
-    <div className="bg-white border-b shadow-sm">
-      <div className="px-4 py-3 flex items-center gap-4">
+    <div className="bg-white/80 backdrop-blur-md border-b border-gray-200/50 shadow-sm">
+      <div className="px-6 py-4 flex items-center gap-4">
         {/* Search Bar - Hidden on mobile */}
         {!isMobile && (
           <div className="flex-1 relative max-w-md">
@@ -37,7 +32,7 @@ export function Header() {
             <Input
               type="text"
               placeholder="Search menu items..."
-              className="pl-10 bg-gray-50 border-0 focus:bg-white"
+              className="pl-10 bg-gray-50/80 border-gray-200 focus:bg-white focus:border-green-300 transition-all duration-200 rounded-xl"
             />
           </div>
         )}
@@ -45,37 +40,10 @@ export function Header() {
         {/* Mobile Header */}
         {isMobile && (
           <div className="flex-1">
-            <h1 className="font-semibold text-lg">{state.settings.restaurantName}</h1>
-            <p className="text-sm text-gray-600">
-              Table {state.currentTable?.number || 4} • {state.currentCustomer?.name || "Walk-in"}
+            <h1 className="font-bold text-lg text-gray-900">{state.settings.restaurantName}</h1>
+            <p className="text-sm text-gray-500">
+              Quick service mode
             </p>
-          </div>
-        )}
-
-        {/* Stats - Desktop only */}
-        {!isMobile && (
-          <div className="flex items-center gap-6">
-            <div className="flex items-center gap-2 text-sm">
-              <Clock className="h-4 w-4 text-orange-500" />
-              <span className="font-medium">{pendingOrders}</span>
-              <span className="text-gray-600">Pending</span>
-            </div>
-
-            <div className="flex items-center gap-2 text-sm">
-              <DollarSign className="h-4 w-4 text-green-500" />
-              <span className="font-medium">${todayRevenue.toFixed(2)}</span>
-              <span className="text-gray-600">Today</span>
-            </div>
-
-            <div className="flex items-center gap-2 text-sm">
-              <Users className="h-4 w-4 text-blue-500" />
-              <span className="font-medium">
-                Table {state.currentTable?.number || 4}
-              </span>
-              <span className="text-gray-600">
-                {state.currentCustomer?.name || "Walk-in"}
-              </span>
-            </div>
           </div>
         )}
 
