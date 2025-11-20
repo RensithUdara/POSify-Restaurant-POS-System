@@ -64,7 +64,7 @@ export function CategoryFilter() {
                     <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-white/20 rounded-full animate-ping"></div>
                     <div className="absolute top-1/2 -left-1 w-2 h-2 bg-white/40 rounded-full animate-bounce"></div>
                   </div>
-                </>n              )}
+                </>\n              )}
               
               <div className={`relative p-3 rounded-2xl mb-3 transition-all duration-300 ${isSelected
                   ? "bg-white/20 backdrop-blur-sm shadow-inner"
