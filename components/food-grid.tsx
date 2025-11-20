@@ -6,6 +6,7 @@ import { useMobile } from "@/hooks/use-mobile"
 import { usePOS } from "@/context/POSContext"
 import { useState, useMemo } from "react"
 import { MenuItem } from "@/types"
+import { ChefHat } from "lucide-react"
 
 const DEFAULT_FILTERS: FilterOptions = {
   category: 'all',
