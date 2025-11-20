@@ -143,12 +143,12 @@ export default function POSPage() {
           {isMobile && !cartOpen && (
             <div className="fixed bottom-6 right-6 z-50">
               <Button
-                className="relative rounded-full h-14 w-14 bg-green-600 hover:bg-green-700 shadow-lg"
+                className="relative rounded-full h-16 w-16 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 shadow-2xl transform transition-all duration-200 hover:scale-110"
                 onClick={() => setCartOpen(true)}
               >
-                <ShoppingCart className="h-6 w-6" />
+                <ShoppingCart className="h-7 w-7 text-white" />
                 {totalCartItems > 0 && (
-                  <div className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full h-6 w-6 flex items-center justify-center text-xs font-bold">
+                  <div className="absolute -top-2 -right-2 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-full h-7 w-7 flex items-center justify-center text-xs font-bold ring-2 ring-white shadow-lg">
                     {totalCartItems > 99 ? '99+' : totalCartItems}
                   </div>
                 )}
