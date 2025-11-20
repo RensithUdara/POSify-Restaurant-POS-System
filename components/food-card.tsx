@@ -50,89 +50,102 @@ export function FoodCard({ menuItem }: FoodCardProps) {
 
   return (
     <>
-      <Card className={`overflow-hidden transition-all duration-200 hover:shadow-lg ${!menuItem.available ? 'opacity-60' : ''}`}>
+      <Card className={`overflow-hidden transition-all duration-300 hover:shadow-xl hover:scale-105 border-0 shadow-md bg-white ${!menuItem.available ? 'opacity-60' : ''}`}>
         <div className="relative">
-          <img
-            src={menuItem.image || "/placeholder.svg"}
-            alt={menuItem.name}
-            className="w-full h-40 object-cover"
-          />
+          <div className="overflow-hidden">
+            <img
+              src={menuItem.image || "/placeholder.svg"}
+              alt={menuItem.name}
+              className="w-full h-48 object-cover transition-transform duration-300 hover:scale-110"
+            />
+          </div>
           {menuItem.discount && (
-            <div className="absolute top-2 left-2 bg-yellow-400 text-black px-2 py-1 rounded-md text-xs font-medium">
-              {menuItem.discount}% Off
+            <div className="absolute top-3 left-3 bg-gradient-to-r from-orange-400 to-orange-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
+              {menuItem.discount}% OFF
             </div>
           )}
           {!menuItem.available && (
-            <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-              <span className="text-white font-medium">Unavailable</span>
+            <div className="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center backdrop-blur-sm">
+              <span className="text-white font-semibold text-lg">Unavailable</span>
             </div>
           )}
           {currentQuantity > 0 && (
-            <div className="absolute top-2 right-2 bg-green-600 text-white rounded-full h-6 w-6 flex items-center justify-center text-xs font-bold">
+            <div className="absolute top-3 right-3 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-full h-8 w-8 flex items-center justify-center text-sm font-bold shadow-lg ring-2 ring-white">
               {currentQuantity}
             </div>
           )}
           <Button
             variant="ghost"
             size="icon"
-            className="absolute bottom-2 right-2 bg-white/80 hover:bg-white"
+            className="absolute bottom-3 right-3 bg-white/90 hover:bg-white shadow-lg rounded-full h-10 w-10 backdrop-blur-sm"
             onClick={() => setShowDetails(true)}
           >
-            <Info className="h-4 w-4" />
+            <Info className="h-4 w-4 text-gray-700" />
           </Button>
         </div>
-        <div className="p-3">
-          <h3 className="text-sm font-medium mb-1 line-clamp-2">{menuItem.name}</h3>
-          <div className="flex justify-between items-center mb-2">
+        <div className="p-4">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2">
+              <div className={`w-3 h-3 rounded-full ${menuItem.type === "Veg" ? "bg-green-500" : "bg-red-500"}`}></div>
+              <Badge variant={menuItem.type === "Veg" ? "outline" : "secondary"} className="text-xs">
+                {menuItem.type}
+              </Badge>
+            </div>
+            {menuItem.preparationTime && (
+              <div className="flex items-center gap-1 text-gray-500">
+                <Clock className="h-3 w-3" />
+                <span className="text-xs">{menuItem.preparationTime}m</span>
+              </div>
+            )}
+          </div>
+          
+          <h3 className="font-bold text-gray-900 mb-2 line-clamp-2 leading-tight">{menuItem.name}</h3>
+          
+          {menuItem.description && (
+            <p className="text-sm text-gray-600 mb-3 line-clamp-2">{menuItem.description}</p>
+          )}
+          
+          <div className="flex justify-between items-end mb-4">
             <div className="flex flex-col">
-              <span className="text-green-600 font-bold">
+              <span className="text-2xl font-bold text-green-600">
                 ${finalPrice.toFixed(2)}
               </span>
               {menuItem.discount && (
-                <span className="text-xs text-gray-500 line-through">
+                <span className="text-sm text-gray-500 line-through">
                   ${menuItem.price.toFixed(2)}
                 </span>
               )}
             </div>
-            <div className="flex items-center gap-1">
-              <span className={`w-2 h-2 rounded-full ${menuItem.type === "Veg" ? "bg-green-500" : "bg-red-500"}`}></span>
-              <span className="text-xs text-gray-500">{menuItem.type}</span>
-            </div>
           </div>
-          {menuItem.preparationTime && (
-            <div className="flex items-center gap-1 mb-2">
-              <Clock className="h-3 w-3 text-gray-400" />
-              <span className="text-xs text-gray-500">{menuItem.preparationTime} min</span>
-            </div>
-          )}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
+          
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-1 bg-gray-50 rounded-full p-1">
               <Button
-                variant="outline"
+                variant="ghost"
                 size="icon"
-                className="rounded-full h-8 w-8"
+                className="rounded-full h-8 w-8 hover:bg-white"
                 onClick={() => handleQuantityChange(-1)}
                 disabled={quantity <= 1}
               >
                 <Minus className="h-3 w-3" />
               </Button>
-              <span className="font-medium w-8 text-center">{quantity}</span>
+              <span className="font-bold w-8 text-center text-gray-900">{quantity}</span>
               <Button
-                variant="outline"
+                variant="ghost"
                 size="icon"
-                className="rounded-full h-8 w-8"
+                className="rounded-full h-8 w-8 hover:bg-white"
                 onClick={() => handleQuantityChange(1)}
               >
                 <Plus className="h-3 w-3" />
               </Button>
             </div>
             <Button
-              size="sm"
+              size="default"
               onClick={handleAddToCart}
               disabled={!menuItem.available}
-              className="bg-green-600 hover:bg-green-700"
+              className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold px-6 rounded-full shadow-lg transition-all duration-200"
             >
-              Add
+              Add to Cart
             </Button>
           </div>
         </div>
