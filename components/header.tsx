@@ -23,27 +23,35 @@ export function Header() {
   ])
 
   return (
-    <div className="bg-white/80 backdrop-blur-md border-b border-gray-200/50 shadow-sm">
-      <div className="px-6 py-4 flex items-center gap-4">
-        {/* Search Bar - Hidden on mobile */}
+    <div className="relative bg-white/90 backdrop-blur-xl border-b border-gray-200/50 shadow-lg overflow-hidden">
+      {/* Background decorative elements */}
+      <div className="absolute inset-0 bg-gradient-to-r from-green-500/5 via-blue-500/5 to-purple-500/5"></div>\n      <div className="absolute -top-10 -right-10 w-20 h-20 bg-gradient-to-br from-green-200/20 to-blue-200/20 rounded-full blur-xl"></div>\n      <div className="absolute -bottom-5 -left-5 w-15 h-15 bg-gradient-to-br from-purple-200/20 to-pink-200/20 rounded-full blur-lg"></div>\n      \n      <div className="relative px-6 py-5 flex items-center gap-6">
+        {/* Search Bar - Enhanced for desktop */}
         {!isMobile && (
-          <div className="flex-1 relative max-w-md">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-            <Input
-              type="text"
-              placeholder="Search menu items..."
-              className="pl-10 bg-gray-50/80 border-gray-200 focus:bg-white focus:border-green-300 transition-all duration-200 rounded-xl"
-            />
+          <div className="flex-1 relative max-w-lg group">
+            <div className="absolute -inset-1 bg-gradient-to-r from-green-400/20 to-blue-400/20 rounded-2xl blur opacity-0 group-hover:opacity-100 transition duration-1000"></div>
+            <div className="relative">
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5 group-hover:text-green-500 transition-colors duration-200" />
+              <Input
+                type="text"
+                placeholder="Search delicious items..."
+                className="pl-12 pr-4 py-3 bg-white/80 border-gray-200/50 focus:bg-white focus:border-green-400 focus:ring-2 focus:ring-green-100 transition-all duration-300 rounded-2xl shadow-lg text-gray-700 placeholder:text-gray-400 font-medium"
+              />
+              <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            </div>
           </div>
         )}
 
-        {/* Mobile Header */}
+        {/* Mobile Header - Enhanced */}
         {isMobile && (
           <div className="flex-1">
-            <h1 className="font-bold text-lg text-gray-900">{state.settings.restaurantName}</h1>
-            <p className="text-sm text-gray-500">
-              Quick service mode
-            </p>
+            <h1 className="font-black text-xl bg-gradient-to-r from-gray-900 to-green-700 bg-clip-text text-transparent">{state.settings.restaurantName}</h1>
+            <div className="flex items-center gap-2 mt-1">
+              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+              <p className="text-sm text-gray-600 font-medium">
+                Quick service mode
+              </p>
+            </div>
           </div>
         )}
 
