@@ -78,20 +78,21 @@ export function Cart({ onClose }: CartProps) {
   const isEmpty = state.cart.length === 0
 
   return (
-    <div className={`${isMobile ? "fixed inset-0 z-50" : "w-[400px]"} bg-white border-l flex flex-col h-full shadow-lg`}>
+    <div className={`${isMobile ? "fixed inset-0 z-50" : "w-[420px]"} bg-white border-l flex flex-col h-full shadow-xl`}>
       {/* Header */}
-      <div className="p-4 border-b bg-gray-50">
-        <div className="flex justify-between items-center mb-2">
+      <div className="p-6 border-b bg-gradient-to-r from-green-50 to-blue-50">
+        <div className="flex justify-between items-center mb-4">
           <div>
-            <h2 className="text-xl font-bold">Table {tableNumber}</h2>
-            <p className="text-sm text-gray-600">
+            <h2 className="text-2xl font-bold text-gray-900">Table {tableNumber}</h2>
+            <p className="text-sm text-gray-600 flex items-center gap-2 mt-1">
+              <User className="h-4 w-4" />
               {state.currentCustomer?.name || "Walk-in Customer"}
             </p>
           </div>
           <div className="flex gap-2">
             <Dialog open={showCustomerDialog} onOpenChange={setShowCustomerDialog}>
               <DialogTrigger asChild>
-                <Button variant="outline" size="icon">
+                <Button variant="outline" size="icon" className="rounded-full shadow-sm">
                   <Edit2 className="h-4 w-4" />
                 </Button>
               </DialogTrigger>
@@ -136,7 +137,7 @@ export function Cart({ onClose }: CartProps) {
             </Dialog>
 
             {onClose && (
-              <Button variant="outline" size="icon" onClick={onClose}>
+              <Button variant="outline" size="icon" onClick={onClose} className="rounded-full shadow-sm">
                 <X className="h-4 w-4" />
               </Button>
             )}
@@ -144,22 +145,32 @@ export function Cart({ onClose }: CartProps) {
         </div>
 
         <DiningMode />
+        
+        {/* Order Summary Badge */}
+        {!isEmpty && (
+          <div className="mt-4 p-3 bg-white rounded-xl shadow-sm border border-gray-100">
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-gray-600">Items in cart</span>
+              <span className="font-semibold text-gray-900">{state.cart.reduce((sum, item) => sum + item.quantity, 0)}</span>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Cart Items */}
-      <div className="flex-1 overflow-auto">
+      <div className="flex-1 overflow-auto scrollbar-thin">
         {isEmpty ? (
           <div className="flex flex-col items-center justify-center h-full p-8 text-center">
-            <div className="text-gray-400 mb-4">
-              <svg className="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mb-6">
+              <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6" />
               </svg>
             </div>
-            <h3 className="text-lg font-medium text-gray-600 mb-2">Your cart is empty</h3>
-            <p className="text-gray-500">Add some items from the menu to get started</p>
+            <h3 className="text-xl font-semibold text-gray-700 mb-2">Your cart is empty</h3>
+            <p className="text-gray-500 text-center max-w-xs">Add some delicious items from the menu to get started</p>
           </div>
         ) : (
-          <div className="p-4 space-y-3">
+          <div className="p-4 space-y-4">
             {state.cart.map((item) => (
               <CartItem key={item.id} item={item} />
             ))}

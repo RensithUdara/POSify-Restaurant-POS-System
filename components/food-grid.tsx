@@ -6,6 +6,7 @@ import { useMobile } from "@/hooks/use-mobile"
 import { usePOS } from "@/context/POSContext"
 import { useState, useMemo } from "react"
 import { MenuItem } from "@/types"
+import { ChefHat } from "lucide-react"
 
 const DEFAULT_FILTERS: FilterOptions = {
   category: 'all',
@@ -96,17 +97,20 @@ export function FoodGrid() {
 
       {/* Items Grid */}
       {filteredAndSortedItems.length === 0 ? (
-        <div className="text-center py-12">
-          <div className="text-gray-500 text-lg mb-2">No items found</div>
-          <p className="text-gray-400">
+        <div className="text-center py-16">
+          <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <ChefHat className="h-8 w-8 text-gray-400" />
+          </div>
+          <div className="text-gray-600 text-lg mb-2 font-medium">No items found</div>
+          <p className="text-gray-500 max-w-sm mx-auto">
             {searchQuery.trim() || JSON.stringify(filters) !== JSON.stringify(DEFAULT_FILTERS)
-              ? "Try adjusting your search or filters"
-              : "No items available"
+              ? "Try adjusting your search or filters to find what you're looking for"
+              : "No items are currently available in our menu"
             }
           </p>
         </div>
       ) : (
-        <div className={`grid ${isMobile ? "grid-cols-1 sm:grid-cols-2" : "grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"} gap-4`}>
+        <div className={`grid ${isMobile ? "grid-cols-1 sm:grid-cols-2" : "grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"} gap-6`}>
           {filteredAndSortedItems.map((item) => (
             <FoodCard key={item.id} menuItem={item} />
           ))}
@@ -114,10 +118,10 @@ export function FoodGrid() {
       )}
 
       {/* Results count */}
-      <div className="text-sm text-gray-500 text-center">
-        Showing {filteredAndSortedItems.length} of {state.menuItems.length} items
+      <div className="text-sm text-gray-500 text-center mt-6 py-4 border-t border-gray-100">
+        <span className="font-medium">Showing {filteredAndSortedItems.length} of {state.menuItems.length} items</span>
         {(searchQuery.trim() || JSON.stringify(filters) !== JSON.stringify(DEFAULT_FILTERS)) &&
-          ` (filtered)`
+          <span className="text-green-600 ml-1">(filtered)</span>
         }
       </div>
     </div>
