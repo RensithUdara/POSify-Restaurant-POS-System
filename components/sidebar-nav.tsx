@@ -183,38 +183,53 @@ export function SidebarNav() {
         ${isMobile && !isOpen ? "-translate-x-full" : "translate-x-0"} 
         bg-white border-r h-screen flex flex-col shadow-lg`}
       >
-        {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b">
+        {/* Header - Enhanced */}
+        <div className="flex items-center justify-between p-6 border-b border-gray-200/50 bg-gradient-to-r from-green-50/50 to-blue-50/50">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-green-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-lg">P</span>
+            <div className="relative group">
+              <div className="absolute -inset-1 bg-gradient-to-r from-green-400 to-blue-400 rounded-xl blur opacity-25 group-hover:opacity-75 transition duration-1000"></div>
+              <div className="relative w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-lg">
+                <span className="text-white font-black text-xl drop-shadow-sm">P</span>
+              </div>
             </div>
             <div>
-              <h1 className="font-bold text-lg">POSify</h1>
-              <p className="text-xs text-gray-500">Restaurant POS</p>
+              <h1 className="font-black text-xl bg-gradient-to-r from-gray-900 to-green-700 bg-clip-text text-transparent">POSify</h1>
+              <p className="text-xs text-gray-600 font-semibold tracking-wide">Restaurant POS</p>
             </div>
           </div>
           {isMobile && (
-            <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)}>
-              <X className="h-4 w-4" />
+            <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)} className="rounded-full hover:bg-gray-100">
+              <X className="h-5 w-5" />
             </Button>
           )}
         </div>
 
-        {/* Current Session Info */}
-        <div className="p-4 bg-gray-50 border-b">
-          <div className="text-sm">
-            <div className="flex justify-between items-center mb-1">
-              <span className="text-gray-600">Current Session</span>
-              <Badge variant="outline" className="text-green-600 border-green-200">
-                Active
-              </Badge>
+        {/* Current Session Info - Enhanced */}
+        <div className="p-5 bg-gradient-to-r from-green-50/80 to-blue-50/80 border-b border-gray-200/50">
+          <div className="relative">
+            <div className="flex justify-between items-center mb-3">
+              <span className="text-gray-700 font-semibold text-sm">Current Session</span>
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 text-white border-0 shadow-md">
+                  Live
+                </Badge>
+              </div>
             </div>
-            <div className="font-medium">
-              Table {state.currentTable?.number || 4}
-            </div>
-            <div className="text-gray-500 text-xs">
-              {state.currentCustomer?.name || "Walk-in Customer"}
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <div className="p-2 bg-white rounded-lg shadow-sm">
+                  <TableBar className="h-4 w-4 text-green-600" />
+                </div>
+                <div>
+                  <div className="font-bold text-gray-900">
+                    Table {state.currentTable?.number || 4}
+                  </div>
+                  <div className="text-gray-600 text-xs font-medium">
+                    {state.currentCustomer?.name || "Walk-in Customer"}
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
