@@ -5,9 +5,9 @@
   "description": "Complete Restaurant Point of Sale System built with Next.js and React",
   "author": "POSify Team",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
+    "dev": "node init && next dev",
+    "build": "node init && next build",
+    "start": "node init && next start",
     "lint": "next lint"
   },
   "dependencies": {
